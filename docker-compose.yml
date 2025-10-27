@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
-  webserver:
+  nginx:
     build:
-      context: .
+      context: ./nginx
       dockerfile: Dockerfile
     ports:
       - "8080:80"
