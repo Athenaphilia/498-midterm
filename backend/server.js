@@ -1,24 +1,26 @@
 const express = require('express');
+const hbs = require('hbs');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
+
+hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Remove static file serving - nginx will handle this
-// app.use(express.static('public')); // Remove this line
+app.use(express.static('public')); // Remove this line
 
-// API Routes
-// Note: We don't include '/api' in our routes because nginx strips it when forwarding
-// nginx receives: http://localhost/api/users
-// nginx forwards to: http://backend-nodejs:3000/users (without /api)
-app.get('/', (req, res) => {
-    res.json({ 
-        message: 'Hello from the API!',
-        timestamp: new Date().toISOString()
-    });
-});
+app.get("/", (req, res) => {
+    res.render('home', {
+        handle: "This is working"
+    })
+})
+
 
 app.get('/health', (req, res) => {
     res.json({ 
