@@ -1,9 +1,9 @@
 services:
   # Node.js Express application
-  backend-nodejs:
+  forum-backend:
     build: ./backend
-    container_name: backend-nodejs
-    restart: unless-stopped
+    container_name: forum-backend
+    restart: no
     environment:
       - NODE_ENV=production
       - PORT=3000
@@ -14,12 +14,12 @@ services:
   # nginx reverse proxy
   nginx:
     build: ./nginx
-    container_name: my-nginx-proxy
+    container_name: nginx
     restart: unless-stopped
     ports:
       - "80:80"  # Only nginx exposes ports to the host
     depends_on:
-      - backend-nodejs
+      - forum-backend
     networks:
       - app-network
 
