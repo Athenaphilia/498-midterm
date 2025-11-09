@@ -2,8 +2,8 @@ const express = require('express');
 const session = require('express-session');
 const hbs = require('hbs');
 const path = require('path');
-const app = express();
 const PORT = process.env.PORT || 3000;
+const app = express();
 
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
@@ -26,9 +26,9 @@ app.use(session({
 
 
 // Variables
-let users = [{username: "user1", password: "pass1"}];
-let comments = [];
-let sessions = [];
+let users = []; // user: {username, password}
+let comments = []; // comment {author, text, createdAt}
+let sessions = []; // session {username, sessionID, expires}
 
 
 // gets the user if it exists, else guest user
@@ -52,6 +52,7 @@ function get_user(sesh) {
     return user
 }
 
+// home page
 app.get("/", (req, res) => {
     const user = get_user(req.session);
     res.render('home', {
@@ -59,6 +60,7 @@ app.get("/", (req, res) => {
     })
 })
 
+// register page
 app.get("/register", (req, res) => {
     const user = get_user(req.session);
     res.render('register', {
@@ -66,6 +68,7 @@ app.get("/register", (req, res) => {
     })
 })
 
+// finds the name in the users list, helper function
 function find_name_in_list(name) {
     for (let i = 0; i < users.length; i++) {
         if (users[i].username === name) {
@@ -75,6 +78,7 @@ function find_name_in_list(name) {
     return -1
 }
 
+// register form submission
 app.post("/register", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -84,13 +88,15 @@ app.post("/register", (req, res) => {
         }); // username is taken
     }
     else {
+        // add the user to the user list
         users.push({username, password});
         console.log(username, password);
         console.log(users);
-        res.redirect("/");
+        res.redirect("/login");
     }
 })
 
+// login page
 app.get("/login", (req, res) => {
     const user = get_user(req.session);
     res.render("login", {
@@ -98,6 +104,7 @@ app.get("/login", (req, res) => {
     });
 })
 
+// login form submission
 app.post("/login", (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
@@ -113,6 +120,7 @@ app.post("/login", (req, res) => {
             wrong_password: 1
         }) // wrong password
     } else {
+        // add the session object to our memory
         req.session.isLoggedIn = true;
         req.session.username = username;
         req.session.loginTime = new Date().toISOString();
@@ -124,11 +132,12 @@ app.post("/login", (req, res) => {
 
 })
 
+// logout form submission
 app.post("/logout", (req, res) => {
     const name = req.session.username;
     for (let index = 0; index < sessions.length; index++) {
         if (sessions[index].username === name) {
-            sessions.splice(index, 1);
+            sessions.splice(index, 1); // delete session from our memory
             break;
         }
         
@@ -142,6 +151,7 @@ app.post("/logout", (req, res) => {
     res.redirect('/');
 })
 
+// new comment page
 app.get("/comment/new", (req, res) => {
     let user = {
         name: "Guest",
@@ -161,23 +171,31 @@ app.get("/comment/new", (req, res) => {
         user: user
     });
     } else {
+        // instructions weren't clear on whether to show an error message or redirect
+        // so I chose to redirect. The HTML contains logic for an error message anyways.
+        // Uncomment the following and comment the res.redirect(...) if you want the error instead
+        // res.render("new-comment", {
+        //  user: user,
+        //  error: 1
+        // })
         res.redirect("/login");
     }
 
 })
 
+// new comment form
 app.post("/comment", (req, res) => {
     if (!req.session.isLoggedIn) {
         return res.render("/comment/new", {
             error: 1
         }) // user is not logged in, so show error message
     }
-
     const user = {
         name: req.session.username,
         loginTime: req.session.loginTime,
         visitCount: req.session.visitCount || 0
     }
+    // add comment to array
     const comment_text = req.body.comment_text;
     comments.push({
         author: user.name,
@@ -189,6 +207,7 @@ app.post("/comment", (req, res) => {
     res.redirect("/comments");
 })
 
+// comments page
 app.get("/comments", (req, res) => {
     const user = get_user(req.session);
     res.render("comments", {
@@ -202,7 +221,7 @@ const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-// to avoid error 137
+// to avoid error 137 on docker shutdown
 process.on('SIGTERM', () => {
     server.close(() => {
         console.log('Server closed. Exiting.');
