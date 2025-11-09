@@ -1,27 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <title>Login</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <title>Login - Cat Forum</title>
 </head>
 <body>
-    {{> header}}
-    <form action="/login" method="post">
-    <label for="uname">Username</label>
-    <input type="text" id="uname" name="username"/>
-    <label for="upass">Password</label>
-    <input type="text" id="upass" name="password"/>
-    <input type="submit" value="Submit">
-    </form>
-    {{#if no_username}}
-    <p style="color: red;">User not found</p>
-    {{/if}}
-    {{#if wrong_password}}
-    <p style="color: red;">Wrong Password</p>
-    {{/if}}
-    {{> footer}}
+  {{> header}}
+
+  <main class="auth-container">
+    <section class="auth-card">
+      <h1>Welcome Back to <span class="highlight">Cat Forum</span></h1>
+      <p class="subtitle">Log in to connect with fellow cat lovers and join the discussions.</p>
+
+      <form action="/login" method="post" class="auth-form">
+        <label for="uname">Username</label>
+        <input type="text" id="uname" name="username" required>
+
+        <label for="upass">Password</label>
+        <input type="password" id="upass" name="password" required>
+
+        <input type="submit" value="Login" class="auth-btn">
+      </form>
+
+      {{#if no_username}}
+        <p class="error-msg">User not found. Please check your username.</p>
+      {{/if}}
+
+      {{#if wrong_password}}
+        <p class="error-msg">Incorrect password. Try again.</p>
+      {{/if}}
+
+      <p class="login-link">
+        Don’t have an account? <a href="/register">Register here</a>.
+      </p>
+    </section>
+  </main>
+
+  {{> footer}}
 </body>
 </html>

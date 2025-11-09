@@ -1,23 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <title>Post</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/post.css">
+  <title>New Post - Cat Forum</title>
 </head>
 <body>
-    {{> header}}
-    {{#if user.isLoggedIn }}
-    <form action="/comment" method="post">
-    <input type="text" name="comment_text">
-    <input type="submit", value="Post">
-    </form>
-    {{/if}}
-    {{#if error}}
-    <p style="color: red;">Not logged in</p>
-    {{/if}}
-    {{> footer}}
+  {{> header}}
+
+  <main class="post-container">
+    <section class="post-card">
+      <h1>Create a New <span class="highlight">Cat Post</span></h1>
+
+      {{#if user.isLoggedIn}}
+        <form action="/comment" method="post" class="post-form">
+          <label for="comment_text">Your Post</label>
+          <textarea id="comment_text" name="comment_text" required></textarea>
+          <input type="submit" value="Post" class="post-btn">
+        </form>
+      {{else}}
+        <p class="error-msg">You must be logged in to post.</p>
+      {{/if}}
+
+      {{#if error}}
+        <p class="error-msg">Not logged in.</p>
+      {{/if}}
+    </section>
+  </main>
+
+  {{> footer}}
 </body>
 </html>

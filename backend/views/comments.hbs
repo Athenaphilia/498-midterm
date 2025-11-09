@@ -1,20 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/header.css">
-    <link rel="stylesheet" href="/css/footer.css">
-    <title>Comments</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/comments.css">
+  <title>Comments - Cat Forum</title>
 </head>
 <body>
-    {{> header}}
-    <h1>Comments</h1>
-    <ul>
-        {{#each comments}}
-        <li>Author: {{author}}, Comment: {{text}}, Date: {{createdAt}}</li>
-        {{/each}}
-    </ul>
-    {{> footer}}
+  {{> header}}
+
+  <main class="comments-container">
+    <section class="comments-section">
+      <h1>Community <span class="highlight">Comments</span></h1>
+      {{#if comments.length}}
+        <ul class="comments-list">
+          {{#each comments}}
+            <li class="comment-card">
+              <div class="comment-header">
+                <span class="author">{{author}}</span>
+                <span class="date">{{createdAt}}</span>
+              </div>
+              <p class="comment-text">{{text}}</p>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="no-comments">No comments yet.</p>
+      {{/if}}
+    </section>
+  </main>
+
+  {{> footer}}
 </body>
 </html>

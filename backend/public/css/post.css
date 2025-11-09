@@ -1,0 +1,88 @@
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: #121212;
+  color: #f0f0f0;
+}
+
+.post-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+  min-height: 80vh;
+}
+
+.post-card {
+  background: linear-gradient(145deg, #1a1a1a, #2b2b2b);
+  padding: 2.5rem 3rem;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+  text-align: center;
+  max-width: 600px;
+  width: 100%;
+}
+
+.post-card h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  color: #ccc;
+}
+
+.highlight {
+  color: #ffd166;
+}
+
+.post-form {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 1rem;
+}
+
+.post-form label {
+  font-weight: 600;
+}
+
+.post-form textarea {
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #333;
+  background-color: #222;
+  color: #fff;
+  font-size: 1rem;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s ease;
+}
+
+.post-form textarea:focus {
+  border-color: #ffd166;
+  outline: none;
+}
+
+.post-btn {
+  background-color: #118ab2;
+  border: none;
+  color: #fff;
+  padding: 0.7rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.post-btn:hover {
+  background-color: #0e6e8d;
+}
+
+.error-msg {
+  margin-top: 1.5rem;
+  color: #ef476f;
+  font-weight: 500;
+}
