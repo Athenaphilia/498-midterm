@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
     <title>Login</title>
 </head>
 <body>
@@ -14,5 +16,12 @@
     <input type="text" id="upass" name="password"/>
     <input type="submit" value="Submit">
     </form>
+    {{#if no_username}}
+    <p style="color: red;">User not found</p>
+    {{/if}}
+    {{#if wrong_password}}
+    <p style="color: red;">Wrong Password</p>
+    {{/if}}
+    {{> footer}}
 </body>
 </html>

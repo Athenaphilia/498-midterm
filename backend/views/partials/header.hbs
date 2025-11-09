@@ -1,10 +1,24 @@
-<header>
-    <nav>
-        <a href="/">Home</a>
+<header class="site-header">
+  <nav class="navbar">
+    <div class="nav-left">
+      <a href="/" class="nav-logo">Home</a>
+      <a href="/comments">Comments</a>
+      {{#if user.isLoggedIn}}
+        <a href="/comment/new">Post</a>
+      {{else}}
         <a href="/register">Register</a>
-        <a href="/login">Login</a>
-        <form action="/logout" method="post">
-        <button type="submit">Logout</button>
+      {{/if}}
+    </div>
+
+    <div class="nav-right">
+      {{#if user.isLoggedIn}}
+        <span class="welcome">Hello, {{user.username}}!</span>
+        <form action="/logout" method="post" class="logout-form">
+          <button type="submit" class="logout-btn">Logout</button>
         </form>
-    </nav>
+      {{else}}
+        <a href="/login" class="login-link">Login</a>
+      {{/if}}
+    </div>
+  </nav>
 </header>

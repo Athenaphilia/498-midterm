@@ -1,21 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/auth.css">
+  <title>Register - Cat Forum</title>
 </head>
 <body>
-    {{> header}}
-    <form action="/register" method="post">
-    <label for="uname">Username</label>
-    <input type="text" id="uname" name="username"/>
-    <label for="upass">Password</label>
-    <input type="text" id="upass" name="password"/>
-    <input type="submit" value="Submit">
-    </form>
-    {{#if error}}
-    <p style="color: red;">Username already exists</p>
-    {{/if}}
+  {{> header}}
+
+  <main class="auth-container">
+    <section class="auth-card">
+      <h1>Join <span class="highlight">Cat Forum</span></h1>
+      <p class="subtitle">Create an account to share your stories, pictures, and love for cats!</p>
+
+      <form action="/register" method="post" class="auth-form">
+        <label for="uname">Username</label>
+        <input type="text" id="uname" name="username" required>
+
+        <label for="upass">Password</label>
+        <input type="password" id="upass" name="password" required>
+
+        <input type="submit" value="Register" class="auth-btn">
+      </form>
+
+      {{#if error}}
+        <p class="error-msg">Username already exists. Please try another.</p>
+      {{/if}}
+
+      <p class="login-link">
+        Already have an account? <a href="/login">Log in here</a>.
+      </p>
+    </section>
+  </main>
+
+  {{> footer}}
 </body>
 </html>

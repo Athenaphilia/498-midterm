@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/home.css">
+  <title>Cat Forum</title>
 </head>
 <body>
-    {{> header}}
-    <h1>This is the home page</h1>
-    {{user.username}}
+  {{> header}}
+
+  <main class="home-container">
+    <section class="intro">
+      <h1>Welcome to <span class="highlight">Cat Forum</span></h1>
+      <p>
+        Post pictures of your cats (you can't because there is no image functionality on this site). So simply gaze upon the cute cats below.
+      </p>
+      {{#if user.isLoggedIn}}
+        <p class="welcome-msg">Welcome, {{user.username}}!</p>
+        <a href="/comments" class="cta-btn">Comments</a>
+      {{else}}
+        <a href="/register" class="cta-btn">Register</a>
+      {{/if}}
+    </section>
+
+    <section class="gallery">
+      <h2>Cat Pictures. LOOK AT THEM.</h2>
+      <div class="cat-grid">
+        <img src="/images/cat1.JPG" alt="Cute cat 1">
+        <img src="/images/cat2.JPG" alt="Cute cat 2">
+        <img src="/images/cat3.jpeg" alt="Cute cat 3">
+        <img src="/images/cat4.jpeg" alt="Cute cat 4">
+      </div>
+    </section>
+  </main>
+  {{> footer}}
 </body>
 </html>
