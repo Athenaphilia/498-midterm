@@ -7,22 +7,5 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
-    # No ports exposed - only nginx can access this container
-    networks:
-      - app-network
-
-  # nginx reverse proxy
-  nginx:
-    build: ./nginx
-    container_name: nginx
-    restart: unless-stopped
     ports:
-      - "80:80"  # Only nginx exposes ports to the host
-    depends_on:
-      - forum-backend
-    networks:
-      - app-network
-
-networks:
-  app-network:
-    driver: bridge
+      - "8080:3000"
