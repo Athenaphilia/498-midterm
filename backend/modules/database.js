@@ -14,9 +14,8 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    email TEXT UNIQUE NOT NULL,
     display_name TEXT NOT NULL,
-    profile_customization TEXT,
+    profile_customization TEXT
   )
 `);
 
@@ -32,10 +31,10 @@ db.exec(`
 db.exec(`
   CREATE TABLE IF NOT EXISTS comments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author TEXT NOT NULL,
+  author INTEGER,
   body TEXT NOT NULL,
   timestamp TEXT NOT NULL,
-  FOREIGN KEY (author) REFERENCES users(username)
+  FOREIGN KEY (author) REFERENCES users(id)
   )
 `)
 
