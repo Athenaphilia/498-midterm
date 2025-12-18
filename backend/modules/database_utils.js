@@ -107,6 +107,13 @@ function delete_comment(comment_id) {
   return stmt.run(comment_id);
 }
 
+function get_comment_count() {
+  const stmt = db.prepare(`
+    SELECT COUNT(*) as count FROM comments;
+  `);
+  return stmt.get().count;
+}
+
 // login attempts
 
 function record_login_attempt(username, ip, timestamp, success) {
@@ -214,6 +221,7 @@ module.exports = {
   create_comment,
   get_comments,
   delete_comment,
+  get_comment_count,
 
   // login attempts
   record_login_attempt,

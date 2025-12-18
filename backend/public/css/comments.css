@@ -84,19 +84,40 @@ body {
 
 .pagination {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   margin-top: 2rem;
+  gap: 1rem;
 }
 
 .page-btn {
-  padding: 0.6rem 1.2rem;
+  padding: 0.5rem 1rem;
   border-radius: 8px;
   background: #222;
   color: #fff;
   text-decoration: none;
-  font-weight: 600;
 }
 
-.page-btn:hover {
-  background: #444;
+.page-btn.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.page-number {
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  background: #333;
+  color: #fff;
+  text-decoration: none;
+}
+
+.page-number.current {
+  background: #ff9800;
+  color: #000;
+  font-weight: bold;
 }

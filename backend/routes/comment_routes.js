@@ -6,7 +6,7 @@ const { require_login } = require('../modules/auth');
 
 const router = express.Router();
 
-const COMMENT_PER_PAGE = 20;
+const COMMENTS_PER_PAGE = 20;
 
 router.get('/comment/new', require_login, (req, res) => {
   res.render('new-comment', {
@@ -33,21 +33,43 @@ router.get('/comments', (req, res) => {
 
 router.get('/comments/:offset', (req, res) => {
   const offset = Number(req.params.offset) || 0;
-  const comments = db_utils.get_comments(COMMENT_PER_PAGE, offset);
-  const next = offset + COMMENT_PER_PAGE;
-  const prev = Math.max(0, offset - COMMENT_PER_PAGE);
 
-  // each comment has: display_name, profile_customization
+  const total = db_utils.get_comment_count(); // <-- total comments
+  const comments = db_utils.get_comments(COMMENTS_PER_PAGE, offset);
+
+  const current_page = Math.floor(offset / COMMENTS_PER_PAGE) + 1;
+  const total_pages = Math.ceil(total / COMMENTS_PER_PAGE);
+
+  const prev_offset = Math.max(0, offset - COMMENTS_PER_PAGE);
+  const next_offset = offset + COMMENTS_PER_PAGE < total ? offset + COMMENTS_PER_PAGE : null;
+
+  const has_prev = offset > 0;
+
+
   comments.forEach(c => {
     const customization = JSON.parse(c.profile_customization || '{}');
     c.name_color = customization.name_color || '#ffffff';
   });
+
+  // Build page numbers
+  const pages = [];
+  for (let i = 1; i <= total_pages; i++) {
+    pages.push({
+      number: i,
+      offset: (i - 1) * COMMENTS_PER_PAGE,
+      is_current: i === current_page
+    });
+  }
   res.render('comments', {
     user: get_user(req.session),
-    comments: comments,
-    next,
-    prev,
-    offset
+    comments,
+    total,
+    current_page,
+    total_pages,
+    prev_offset,
+    has_prev,
+    next_offset,
+    pages
   });
 });
 
