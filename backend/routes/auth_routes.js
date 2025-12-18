@@ -84,13 +84,13 @@ router.post('/login', async (req, res) => {
 
   // Username does not exist
   if (!user) {
-    db_utils.record_login_attempt(username, ip, false);
+    db_utils.record_login_attempt(username, ip, Date.now(), false);
     return res.render('login', { login_error: 1 });
   }
 
   // Account locked
   if (is_account_locked(user)) {
-    db_utils.record_login_attempt(username, ip, false);
+    db_utils.record_login_attempt(username, ip, Date.now(), false);
     return res.render('login', {
       locked: true,
       locked_until: user.locked_until
@@ -100,7 +100,7 @@ router.post('/login', async (req, res) => {
   const password_ok = await comparePassword(password, user.password_hash);
 
   if (!password_ok) {
-    db_utils.record_login_attempt(username, ip, false);
+    db_utils.record_login_attempt(username, ip, Date.now(), false);
     db_utils.increment_failed_attempts(user.id);
 
     // Lock if threshold reached
@@ -111,8 +111,8 @@ router.post('/login', async (req, res) => {
     return res.render('login', { login_error: 1 });
   }
 
-  // ✅ Successful login
-  db_utils.record_login_attempt(username, ip, true);
+  // Login successful
+  db_utils.record_login_attempt(username, ip, Date.now(), true);
   db_utils.reset_failed_attempts(user.id);
 
   req.session.isLoggedIn = true;
@@ -123,7 +123,7 @@ router.post('/login', async (req, res) => {
   db_utils.create_session(
     req.sessionID,
     username,
-    new Date(Date.now() + 86400000).toISOString()
+    new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   );
 
   res.redirect('/');

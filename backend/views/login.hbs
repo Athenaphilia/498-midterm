@@ -26,6 +26,15 @@
         <input type="submit" value="Login" class="auth-btn">
       </form>
 
+      {{#if locked}}
+        <div class="error-box">
+          <p class="error-msg">
+            Your account is locked until {{locked_until}}.
+            Please try again later.
+          </p>
+        </div>
+      {{/if}}
+
       {{#if login_error}}
         <p class="error-msg">Username and password do not match.</p>
       {{/if}}

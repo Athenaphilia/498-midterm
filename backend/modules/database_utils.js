@@ -109,12 +109,12 @@ function delete_comment(comment_id) {
 
 // login attempts
 
-function record_login_attempt(ip, timestamp, success) {
+function record_login_attempt(username, ip, timestamp, success) {
   const stmt = db.prepare(`
-    INSERT INTO login_attempts (ip, timestamp, success)
-    VALUES (?, ?, ?)
+    INSERT INTO login_attempts (ip, username, timestamp, success)
+    VALUES (?, ?, ?, ?)
   `);
-  return stmt.run(ip, timestamp, success ? 1 : 0);
+  return stmt.run(username, ip, timestamp, success ? 1 : 0);
 }
 
 function get_recent_login_attempts(ip, since_timestamp) {
@@ -160,6 +160,7 @@ module.exports = {
   get_user_by_id,
   get_user_by_username,
   update_profile_customization,
+  lock_account,
 
   // sessions
   create_session,
@@ -176,6 +177,5 @@ module.exports = {
   record_login_attempt,
   get_recent_login_attempts,
   increment_failed_attempts,
-  reset_failed_attempts,
-  lock_account
+  reset_failed_attempts
 };
