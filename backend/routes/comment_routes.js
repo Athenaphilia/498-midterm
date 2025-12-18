@@ -25,8 +25,11 @@ router.post('/comment', require_login, (req, res) => {
   res.redirect('/comments');
 });
 
-router.get('/comments', (req, res) => {
-  const comments = db_utils.get_comments(50, 0);
+router.get('/comments/:offset', (req, res) => {
+  const offset = Number(req.params.offset) || 0;
+  const comments = db_utils.get_comments(20, offset);
+  const next = offset + 20;
+  const prev = Math.max(0, offset - 20);
 
   // each comment has: display_name, profile_customization
   comments.forEach(c => {
@@ -35,7 +38,10 @@ router.get('/comments', (req, res) => {
   });
   res.render('comments', {
     user: get_user(req.session),
-    comments: comments
+    comments: comments,
+    next,
+    prev,
+    offset
   });
 });
 

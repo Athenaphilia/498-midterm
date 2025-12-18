@@ -16,6 +16,11 @@ app.set('trust proxy', true);
 
 // view engine
 app.set('view engine', 'hbs');
+
+hbs.registerHelper('gt', function (a, b) {
+  return a > b;
+});
+
 app.set('views', path.join(__dirname, 'views'));
 hbs.registerPartials(path.join(__dirname, 'views', 'partials'));
 

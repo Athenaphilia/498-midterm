@@ -83,7 +83,7 @@ function create_comment(author_id, body, timestamp) {
   return stmt.run(author_id, body, timestamp);
 }
 
-function get_comments(limit = 50, offset = 0) {
+function get_comments(limit = 20, offset = 0) {
   const stmt = db.prepare(`
     SELECT
       comments.id,
@@ -93,7 +93,7 @@ function get_comments(limit = 50, offset = 0) {
       users.profile_customization AS profile_customization
     FROM comments
     LEFT JOIN users ON comments.author = users.id
-    ORDER BY comments.timestamp DESC
+    ORDER BY comments.timestamp ASC
     LIMIT ? OFFSET ?
   `);
   return stmt.all(limit, offset);

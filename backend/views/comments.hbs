@@ -32,6 +32,15 @@
         <p class="no-comments">No comments yet.</p>
       {{/if}}
     </section>
+    <div class="pagination">
+      {{#if (gt offset 0)}}
+        <a class="page-btn prev" href="/comments/{{prev}}">← Prev</a>
+      {{/if}}
+
+      {{#if comments.length}}
+        <a class="page-btn next" href="/comments/{{next}}">Next →</a>
+      {{/if}}
+        </div>
   </main>
 
   {{> footer}}
