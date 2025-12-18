@@ -59,7 +59,7 @@ router.post('/register', async (req, res) => {
 
   try {
     const password_hash = await hashPassword(password);
-    const profile = { name_color: '#FFFFFF', avatar: 'default', bio: '' };
+    const profile = { name_color: '#ffffff' };
 
     db_utils.create_user(
       username,

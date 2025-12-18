@@ -11,14 +11,17 @@ const {
 } = require('../modules/password_utils');
 
 const db_utils = require('../modules/database_utils');
+const { get_user } = require('../modules/user_helpers');
 
 
 // GET profile page
 router.get('/profile', require_login, (req, res) => {
   const user = db_utils.get_user_by_username(req.session.username);
+  const customization = db_utils.get_profile_customization(user.id);
 
   res.render('profile', {
-    user,
+    user: get_user(req.session),
+    customization
   });
 });
 
@@ -29,7 +32,7 @@ router.post('/profile/display-name', require_login, (req, res) => {
   const display_check = is_valid_display_name(display_name);
   if (!display_check.valid) {
     return res.render('profile', {
-      user: db_utils.get_user_by_username(req.session.username),
+      user: get_user(req.session),
       errors: display_check.errors
     });
   }
@@ -49,7 +52,7 @@ router.post('/profile/password', require_login, async (req, res) => {
   const old_ok = await comparePassword(old_password, user.password_hash);
   if (!old_ok) {
     return res.render('profile', {
-      user,
+      user: get_user(req.session),
       password_error: 'Current password is incorrect'
     });
   }
@@ -58,7 +61,7 @@ router.post('/profile/password', require_login, async (req, res) => {
   const check = validatePassword(new_password);
   if (!check.valid) {
     return res.render('profile', {
-      user,
+      user: get_user(req.session),
       password_errors: check.errors
     });
   }
@@ -73,5 +76,27 @@ router.post('/profile/password', require_login, async (req, res) => {
     res.redirect('/login');
   });
 });
+
+router.post('/profile/customization', require_login, (req, res) => {
+  const { name_color } = req.body;
+  const user = db_utils.get_user_by_username(req.session.username);
+
+  // Is it a hex color
+  if (!/^#[0-9A-Fa-f]{6}$/.test(name_color)) {
+    return res.render('profile', {
+      user: get_user(req.session),
+      customization: db_utils.get_profile_customization(user.id),
+      customization_error: 'Invalid color format'
+    });
+  }
+
+  const customization = db_utils.get_profile_customization(user.id);
+  customization.name_color = name_color;
+
+  db_utils.update_profile_customization(user.id, customization);
+
+  res.redirect('/profile');
+});
+
 
 module.exports = router;

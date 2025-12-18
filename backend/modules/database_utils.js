@@ -35,7 +35,7 @@ function update_profile_customization(user_id, profile_customization) {
     SET profile_customization = ?
     WHERE id = ?
   `);
-  return stmt.run(profile_customization, user_id);
+  return stmt.run(JSON.stringify(profile_customization), user_id);
 }
 
 // sessions
@@ -89,8 +89,8 @@ function get_comments(limit = 50, offset = 0) {
       comments.id,
       comments.body,
       comments.timestamp,
-      users.username AS author_username,
-      users.display_name AS author_display_name
+      users.display_name AS author_display_name,
+      users.profile_customization AS profile_customization
     FROM comments
     LEFT JOIN users ON comments.author = users.id
     ORDER BY comments.timestamp DESC
@@ -174,11 +174,30 @@ function update_password(user_id, password_hash) {
   stmt.run(password_hash, user_id);
 }
 
+function get_profile_customization(user_id) {
+  const stmt = db.prepare(`
+    SELECT profile_customization FROM users WHERE id = ?
+  `);
+  const row = stmt.get(user_id);
+
+  if (!row || !row.profile_customization) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(row.profile_customization);
+  } catch {
+    return {};
+  }
+}
+
+
 module.exports = {
   // users
   create_user,
   get_user_by_id,
   get_user_by_username,
+  get_profile_customization,
   update_profile_customization,
   lock_account,
   delete_sessions_for_user,
