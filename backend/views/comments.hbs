@@ -19,10 +19,10 @@
           {{#each comments}}
             <li class="comment-card">
               <div class="comment-header">
-                <span class="author">{{author}}</span>
-                <span class="date">{{createdAt}}</span>
+                <span class="author">{{author_display_name}}</span>
+                <span class="date">{{timestamp}}</span>
               </div>
-              <p class="comment-text">{{text}}</p>
+              <p class="comment-text">{{body}}</p>
             </li>
           {{/each}}
         </ul>

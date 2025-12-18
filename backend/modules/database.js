@@ -21,7 +21,7 @@ db.exec(`
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS sessions (
-    id INTEGER PRIMARY KEY,
+    id TEXT PRIMARY KEY,
     username TEXT NOT NULL,
     expires TEXT NOT NULL
   )

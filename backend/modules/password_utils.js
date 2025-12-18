@@ -1,4 +1,4 @@
-// modules/password-utils.js
+// password-utils.js
 const argon2 = require('argon2');
 
 // Argon2 configuration options

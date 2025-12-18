@@ -14,21 +14,38 @@
   <main class="auth-container">
     <section class="auth-card">
       <h1>Join <span class="highlight">Cat Forum</span></h1>
-      <p class="subtitle">Create an account to share your stories, pictures, and love for cats!</p>
+      <p class="subtitle">
+        Create an account to share your stories, pictures, and love for cats!
+      </p>
+
+      {{!-- Single error (e.g. username taken) --}}
+      {{#if error}}
+        <div class="error-box">
+          <p class="error-msg">{{error}}</p>
+        </div>
+      {{/if}}
+
+      {{!-- Multiple validation errors (password rules) --}}
+      {{#if error_messages}}
+        <div class="error-box">
+          <ul class="error-list">
+            {{#each error_messages}}
+              <li class="error-msg">{{this}}</li>
+            {{/each}}
+          </ul>
+        </div>
+      {{/if}}
 
       <form action="/register" method="post" class="auth-form">
         <label for="uname">Username</label>
         <input type="text" id="uname" name="username" required>
-
+        <label for="udis">Display Name</label>
+        <input type="text" id="udis" name="display_name" required>
         <label for="upass">Password</label>
         <input type="password" id="upass" name="password" required>
 
         <input type="submit" value="Register" class="auth-btn">
       </form>
-
-      {{#if error}}
-        <p class="error-msg">Username already exists. Please try another.</p>
-      {{/if}}
 
       <p class="login-link">
         Already have an account? <a href="/login">Log in here</a>.
