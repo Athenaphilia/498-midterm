@@ -1,8 +1,8 @@
-// database.js
+// modules/database.js
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const dbPath = path.join(__dirname, 'app.db');
+const dbPath = path.join('/data', 'app.db');
 const db = new Database(dbPath);
 
 // Enable foreign keys
@@ -15,7 +15,9 @@ db.exec(`
     username TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     display_name TEXT NOT NULL,
-    profile_customization TEXT
+    profile_customization TEXT,
+    locked_until TEXT,
+    failed_attempts INTEGER DEFAULT 0
   )
 `);
 
@@ -41,6 +43,7 @@ db.exec(`
 db.exec(`
   CREATE TABLE IF NOT EXISTS login_attempts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT,
   ip TEXT NOT NULL,
   timestamp TEXT NOT NULL,
   success INTEGER

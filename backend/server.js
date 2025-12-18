@@ -5,12 +5,13 @@ const hbs = require('hbs');
 const path = require('path');
 const { requestLogger } = require('./modules/logging');
 const db = require('./modules/database');
-
 const page_routes = require('./routes/page_routes');
 const auth_routes = require('./routes/auth_routes');
 const comment_routes = require('./routes/comment_routes');
 
 const app = express();
+
+app.set('trust proxy', true);
 
 // view engine
 app.set('view engine', 'hbs');

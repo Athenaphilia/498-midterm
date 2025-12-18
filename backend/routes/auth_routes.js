@@ -10,6 +10,20 @@ const { get_user } = require('../modules/user_helpers');
 
 const router = express.Router();
 
+const MAX_FAILED = 5;
+const LOCKOUT_MINUTES = 15;
+
+function is_account_locked(user) {
+  if (!user.locked_until) return false;
+  return new Date(user.locked_until) > new Date();
+}
+
+function lock_until_timestamp() {
+  return new Date(
+    Date.now() + LOCKOUT_MINUTES * 60 * 1000
+  ).toISOString();
+}
+
 // register page
 router.get('/register', (req, res) => {
   res.render('register', {
@@ -64,16 +78,42 @@ router.get('/login', (req, res) => {
 // login submit
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
+  const ip = req.ip;
 
   const user = db_utils.get_user_by_username(username);
+
+  // Username does not exist
   if (!user) {
+    db_utils.record_login_attempt(username, ip, false);
     return res.render('login', { login_error: 1 });
   }
 
-  const ok = await comparePassword(password, user.password_hash);
-  if (!ok) {
+  // Account locked
+  if (is_account_locked(user)) {
+    db_utils.record_login_attempt(username, ip, false);
+    return res.render('login', {
+      locked: true,
+      locked_until: user.locked_until
+    });
+  }
+
+  const password_ok = await comparePassword(password, user.password_hash);
+
+  if (!password_ok) {
+    db_utils.record_login_attempt(username, ip, false);
+    db_utils.increment_failed_attempts(user.id);
+
+    // Lock if threshold reached
+    if (user.failed_attempts + 1 >= MAX_FAILED) {
+      db_utils.lock_account(user.id, lock_until_timestamp());
+    }
+
     return res.render('login', { login_error: 1 });
   }
+
+  // ✅ Successful login
+  db_utils.record_login_attempt(username, ip, true);
+  db_utils.reset_failed_attempts(user.id);
 
   req.session.isLoggedIn = true;
   req.session.username = username;
@@ -88,6 +128,8 @@ router.post('/login', async (req, res) => {
 
   res.redirect('/');
 });
+
+
 
 // logout
 router.post('/logout', (req, res) => {

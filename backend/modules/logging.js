@@ -1,4 +1,4 @@
-// logging-middleware.js
+// modules/logging.js
 
 function requestLogger(req, res, next) {
   // Store the start time

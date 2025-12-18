@@ -1,4 +1,4 @@
-// db_utils.js
+// modules/db_utils.js
 const db = require('./database');
 
 // users
@@ -128,6 +128,32 @@ function get_recent_login_attempts(ip, since_timestamp) {
   return stmt.all(ip, since_timestamp);
 }
 
+function increment_failed_attempts(user_id) {
+  db.prepare(`
+    UPDATE users
+    SET failed_attempts = failed_attempts + 1
+    WHERE id = ?
+  `).run(user_id);
+}
+
+function reset_failed_attempts(user_id) {
+  db.prepare(`
+    UPDATE users
+    SET failed_attempts = 0,
+        locked_until = NULL
+    WHERE id = ?
+  `).run(user_id);
+}
+
+function lock_account(user_id, locked_until) {
+  db.prepare(`
+    UPDATE users
+    SET locked_until = ?
+    WHERE id = ?
+  `).run(locked_until, user_id);
+}
+
+
 module.exports = {
   // users
   create_user,
@@ -149,4 +175,7 @@ module.exports = {
   // login attempts
   record_login_attempt,
   get_recent_login_attempts,
+  increment_failed_attempts,
+  reset_failed_attempts,
+  lock_account
 };
