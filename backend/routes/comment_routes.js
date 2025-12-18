@@ -6,6 +6,8 @@ const { require_login } = require('../modules/auth');
 
 const router = express.Router();
 
+const COMMENT_PER_PAGE = 20;
+
 router.get('/comment/new', require_login, (req, res) => {
   res.render('new-comment', {
     user: get_user(req.session)
@@ -25,11 +27,15 @@ router.post('/comment', require_login, (req, res) => {
   res.redirect('/comments');
 });
 
+router.get('/comments', (req, res) => {
+  res.redirect('/comments/0');
+})
+
 router.get('/comments/:offset', (req, res) => {
   const offset = Number(req.params.offset) || 0;
-  const comments = db_utils.get_comments(20, offset);
-  const next = offset + 20;
-  const prev = Math.max(0, offset - 20);
+  const comments = db_utils.get_comments(COMMENT_PER_PAGE, offset);
+  const next = offset + COMMENT_PER_PAGE;
+  const prev = Math.max(0, offset - COMMENT_PER_PAGE);
 
   // each comment has: display_name, profile_customization
   comments.forEach(c => {
