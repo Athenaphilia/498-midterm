@@ -1,0 +1,77 @@
+/* Slightly wider card for settings */
+.auth-card {
+  max-width: 520px;
+}
+
+/* Page title */
+.auth-card h1 {
+  margin-bottom: 1.5rem;
+  font-size: 2.1rem;
+  color: #ffd166;
+}
+
+/* Section containers (each form) */
+.auth-card form {
+  background-color: rgba(0, 0, 0, 0.25);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+/* Section headers */
+.auth-card h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  border-bottom: 1px solid #333;
+  padding-bottom: 0.4rem;
+}
+
+/* Inputs spacing */
+.auth-card input[type="text"],
+.auth-card input[type="password"],
+.auth-card input[type="color"] {
+  width: 100%;
+  margin-bottom: 0.8rem;
+}
+
+/* Color picker specific tweaks */
+.auth-card input[type="color"] {
+  height: 42px;
+  padding: 0.2rem;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+/* Buttons alignment */
+.auth-card .auth-btn {
+  width: 100%;
+  margin-top: 0.6rem;
+}
+
+/* Password form warning emphasis */
+.auth-card form[action="/profile/password"] h2 {
+  color: #ef476f;
+}
+
+/* Error messages inside sections */
+.auth-card .error-msg {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Error list formatting */
+.auth-card ul.error-msg {
+  padding-left: 1.2rem;
+}
+
+.auth-card ul.error-msg li {
+  margin-bottom: 0.3rem;
+}
+
+/* Divider cleanup (optional safety) */
+.auth-card hr {
+  display: none;
+}

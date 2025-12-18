@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <title>Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/auth.css">
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body>
   {{> header}}
@@ -12,8 +16,7 @@
     <section class="auth-card">
       <h1>Your Profile</h1>
 
-      <!-- Change display name -->
-      <form method="post" action="/profile/display-name">
+      <form method="post" action="/profile/display-name", class="auth-form">
         <h2>Change Display Name</h2>
 
         <input
@@ -32,8 +35,27 @@
 
       <hr>
 
-      <!-- Change password -->
-      <form method="post" action="/profile/password">
+      <form method="post" action="/profile/customization" class="auth-form">
+        <h2>Profile Customization</h2>
+
+        <label for="name_color">Display Name Color</label>
+        <input
+          type="color"
+          id="name_color"
+          name="name_color"
+          value="{{customization.name_color}}"
+        >
+
+        {{#if customization_error}}
+          <p class="error-msg">{{customization_error}}</p>
+        {{/if}}
+
+        <button class="auth-btn">Save Customization</button>
+      </form>
+
+      <hr>
+
+      <form method="post" action="/profile/password" class="auth-form">
         <h2>Change Password</h2>
 
         <input
