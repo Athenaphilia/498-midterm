@@ -3,7 +3,8 @@ const express = require('express');
 const {
   validatePassword,
   hashPassword,
-  comparePassword
+  comparePassword,
+  is_valid_display_name
 } = require('../modules/password_utils');
 const db_utils = require('../modules/database_utils');
 const { get_user } = require('../modules/user_helpers');
@@ -45,6 +46,12 @@ router.post('/register', async (req, res) => {
       error_messages: password_check.errors
     });
   }
+  const display_check = is_valid_display_name(display_name);
+  if (!display_check.valid) {
+    return res.render('register', {
+      error_messages: display_check.errors
+    });
+  }
 
   if (db_utils.get_user_by_username(username)) {
     return res.render('register', { error: 'Username already taken' });
@@ -52,7 +59,7 @@ router.post('/register', async (req, res) => {
 
   try {
     const password_hash = await hashPassword(password);
-    const profile = { name_color: '#FFFFFF', avatar: 'default', bio: '' };
+    const profile = { name_color: '#ffffff' };
 
     db_utils.create_user(
       username,

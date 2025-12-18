@@ -26,9 +26,16 @@ router.post('/comment', require_login, (req, res) => {
 });
 
 router.get('/comments', (req, res) => {
+  const comments = db_utils.get_comments(50, 0);
+
+  // each comment has: display_name, profile_customization
+  comments.forEach(c => {
+    const customization = JSON.parse(c.profile_customization || '{}');
+    c.name_color = customization.name_color || '#ffffff';
+  });
   res.render('comments', {
     user: get_user(req.session),
-    comments: db_utils.get_comments(100, 0)
+    comments: comments
   });
 });
 

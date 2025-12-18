@@ -35,7 +35,7 @@ function update_profile_customization(user_id, profile_customization) {
     SET profile_customization = ?
     WHERE id = ?
   `);
-  return stmt.run(profile_customization, user_id);
+  return stmt.run(JSON.stringify(profile_customization), user_id);
 }
 
 // sessions
@@ -89,8 +89,8 @@ function get_comments(limit = 50, offset = 0) {
       comments.id,
       comments.body,
       comments.timestamp,
-      users.username AS author_username,
-      users.display_name AS author_display_name
+      users.display_name AS author_display_name,
+      users.profile_customization AS profile_customization
     FROM comments
     LEFT JOIN users ON comments.author = users.id
     ORDER BY comments.timestamp DESC
@@ -153,14 +153,56 @@ function lock_account(user_id, locked_until) {
   `).run(locked_until, user_id);
 }
 
+function delete_sessions_for_user(username) {
+  const stmt = db.prepare(`
+    DELETE FROM sessions WHERE username = ?
+  `);
+  stmt.run(username);
+}
+
+function update_display_name(user_id, display_name) {
+  const stmt = db.prepare(`
+    UPDATE users SET display_name = ? WHERE id = ?
+  `);
+  stmt.run(display_name, user_id);
+}
+
+function update_password(user_id, password_hash) {
+  const stmt = db.prepare(`
+    UPDATE users SET password_hash = ? WHERE id = ?
+  `);
+  stmt.run(password_hash, user_id);
+}
+
+function get_profile_customization(user_id) {
+  const stmt = db.prepare(`
+    SELECT profile_customization FROM users WHERE id = ?
+  `);
+  const row = stmt.get(user_id);
+
+  if (!row || !row.profile_customization) {
+    return {};
+  }
+
+  try {
+    return JSON.parse(row.profile_customization);
+  } catch {
+    return {};
+  }
+}
+
 
 module.exports = {
   // users
   create_user,
   get_user_by_id,
   get_user_by_username,
+  get_profile_customization,
   update_profile_customization,
   lock_account,
+  delete_sessions_for_user,
+  update_display_name,
+  update_password,
 
   // sessions
   create_session,
