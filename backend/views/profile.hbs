@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Profile</title>
+  <link rel="stylesheet" href="/css/auth.css">
+</head>
+<body>
+  {{> header}}
+
+  <main class="auth-container">
+    <section class="auth-card">
+      <h1>Your Profile</h1>
+
+      <!-- Change display name -->
+      <form method="post" action="/profile/display-name">
+        <h2>Change Display Name</h2>
+
+        <input
+          type="text"
+          name="display_name"
+          value="{{user.display_name}}"
+          required
+        >
+
+        {{#if display_name_error}}
+          <p class="error-msg">{{display_name_error}}</p>
+        {{/if}}
+
+        <button class="auth-btn">Update Display Name</button>
+      </form>
+
+      <hr>
+
+      <!-- Change password -->
+      <form method="post" action="/profile/password">
+        <h2>Change Password</h2>
+
+        <input
+          type="password"
+          name="old_password"
+          placeholder="Current password"
+          required
+        >
+
+        <input
+          type="password"
+          name="new_password"
+          placeholder="New password"
+          required
+        >
+
+        {{#if password_error}}
+          <p class="error-msg">{{password_error}}</p>
+        {{/if}}
+
+        {{#if password_errors}}
+          <ul class="error-msg">
+            {{#each password_errors}}
+              <li>{{this}}</li>
+            {{/each}}
+          </ul>
+        {{/if}}
+
+        <button class="auth-btn">Change Password</button>
+      </form>
+    </section>
+  </main>
+
+  {{> footer}}
+</body>
+</html>

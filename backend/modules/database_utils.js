@@ -153,6 +153,26 @@ function lock_account(user_id, locked_until) {
   `).run(locked_until, user_id);
 }
 
+function delete_sessions_for_user(username) {
+  const stmt = db.prepare(`
+    DELETE FROM sessions WHERE username = ?
+  `);
+  stmt.run(username);
+}
+
+function update_display_name(user_id, display_name) {
+  const stmt = db.prepare(`
+    UPDATE users SET display_name = ? WHERE id = ?
+  `);
+  stmt.run(display_name, user_id);
+}
+
+function update_password(user_id, password_hash) {
+  const stmt = db.prepare(`
+    UPDATE users SET password_hash = ? WHERE id = ?
+  `);
+  stmt.run(password_hash, user_id);
+}
 
 module.exports = {
   // users
@@ -161,6 +181,9 @@ module.exports = {
   get_user_by_username,
   update_profile_customization,
   lock_account,
+  delete_sessions_for_user,
+  update_display_name,
+  update_password,
 
   // sessions
   create_session,

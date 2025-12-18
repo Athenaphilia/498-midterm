@@ -60,8 +60,25 @@ async function comparePassword(password, hash) {
   return await argon2.verify(hash, password);
 }
 
+function is_valid_display_name(display_name) {
+  const errors = [];
+  if (display_name.length < 5) {
+    errors.push('Password must be at least 5 characters long');
+  }
+
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(display_name)) {
+    errors.push("Display names may not contain special characters.");
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors: errors
+  };
+}
+
 module.exports = {
   validatePassword,
   hashPassword,
-  comparePassword
+  comparePassword,
+  is_valid_display_name
 };

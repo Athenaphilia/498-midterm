@@ -3,7 +3,8 @@ const express = require('express');
 const {
   validatePassword,
   hashPassword,
-  comparePassword
+  comparePassword,
+  is_valid_display_name
 } = require('../modules/password_utils');
 const db_utils = require('../modules/database_utils');
 const { get_user } = require('../modules/user_helpers');
@@ -22,22 +23,6 @@ function lock_until_timestamp() {
   return new Date(
     Date.now() + LOCKOUT_MINUTES * 60 * 1000
   ).toISOString();
-}
-
-function is_valid_display_name(display_name) {
-  const errors = [];
-  if (password.length < 8) {
-    errors.push('Password must be at least 8 characters long');
-  }
-
-  if (/[!@#$%^&*(),.?":{}|<>]/.test(display_name)) {
-    errors.push("Display names may not contain special characters.");
-  }
-
-  return {
-    valid: errors.length === 0,
-    errors: errors
-  };
 }
 
 // register page
