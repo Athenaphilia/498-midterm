@@ -142,3 +142,6 @@ vite.config.ts.timestamp-*
 
 # Database
 app.db
+
+# Mac Files
+.DS_Store
