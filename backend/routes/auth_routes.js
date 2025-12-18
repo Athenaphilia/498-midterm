@@ -24,6 +24,22 @@ function lock_until_timestamp() {
   ).toISOString();
 }
 
+function is_valid_display_name(display_name) {
+  const errors = [];
+  if (password.length < 8) {
+    errors.push('Password must be at least 8 characters long');
+  }
+
+  if (/[!@#$%^&*(),.?":{}|<>]/.test(display_name)) {
+    errors.push("Display names may not contain special characters.");
+  }
+
+  return {
+    valid: errors.length === 0,
+    errors: errors
+  };
+}
+
 // register page
 router.get('/register', (req, res) => {
   res.render('register', {
@@ -43,6 +59,12 @@ router.post('/register', async (req, res) => {
   if (!password_check.valid) {
     return res.render('register', {
       error_messages: password_check.errors
+    });
+  }
+  const display_check = is_valid_display_name(display_name);
+  if (!display_check.valid) {
+    return res.render('register', {
+      error_messages: display_check.errors
     });
   }
 
