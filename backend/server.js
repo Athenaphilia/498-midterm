@@ -1,4 +1,5 @@
 // server.js
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const http = require('http');
@@ -20,11 +21,11 @@ const io_server = http.createServer(app);
 const io = new Server(io_server);
 
 const session_middleware = session({
-  secret: 'this-is-very-unsafe-plz-change',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: false,
+    secure: process.env.COOKIE_SECURE,
     maxAge: 24 * 60 * 60 * 1000
   }
 })
