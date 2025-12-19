@@ -3,6 +3,7 @@ const express = require('express');
 const db_utils = require('../modules/database_utils');
 const { get_user } = require('../modules/user_helpers');
 const { require_login } = require('../modules/auth');
+const { renderMarkdown } = require('../modules/markdown');
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router.get('/comments', (req, res) => {
 router.get('/comments/:offset', (req, res) => {
   const offset = Number(req.params.offset) || 0;
 
-  const total = db_utils.get_comment_count(); // <-- total comments
+  const total = db_utils.get_comment_count();
   const comments = db_utils.get_comments(COMMENTS_PER_PAGE, offset);
 
   const current_page = Math.floor(offset / COMMENTS_PER_PAGE) + 1;
@@ -49,6 +50,7 @@ router.get('/comments/:offset', (req, res) => {
   comments.forEach(c => {
     const customization = JSON.parse(c.profile_customization || '{}');
     c.name_color = customization.name_color || '#ffffff';
+    c.body = renderMarkdown(c.body);
   });
 
   // Build page numbers
