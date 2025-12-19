@@ -1,4 +1,6 @@
 // routes/profile_routes.js
+// handles the profile route
+
 const express = require('express');
 const router = express.Router();
 const { require_login } = require('../modules/auth');
@@ -14,7 +16,7 @@ const db_utils = require('../modules/database_utils');
 const { get_user } = require('../modules/user_helpers');
 
 
-// GET profile page
+// profile page
 router.get('/profile', require_login, (req, res) => {
   const user = db_utils.get_user_by_username(req.session.username);
   const customization = db_utils.get_profile_customization(user.id);
@@ -25,7 +27,7 @@ router.get('/profile', require_login, (req, res) => {
   });
 });
 
-// POST change display name
+// change display name
 router.post('/profile/display-name', require_login, (req, res) => {
   const { display_name } = req.body;
 
@@ -43,12 +45,12 @@ router.post('/profile/display-name', require_login, (req, res) => {
   res.redirect('/profile');
 });
 
-// POST change password
+// change password
 router.post('/profile/password', require_login, async (req, res) => {
   const { old_password, new_password } = req.body;
   const user = db_utils.get_user_by_username(req.session.username);
 
-  // Verify old password
+  // verify old password
   const old_ok = await comparePassword(old_password, user.password_hash);
   if (!old_ok) {
     return res.render('profile', {
@@ -57,7 +59,7 @@ router.post('/profile/password', require_login, async (req, res) => {
     });
   }
 
-  // Validate new password
+  // validate new password
   const check = validatePassword(new_password);
   if (!check.valid) {
     return res.render('profile', {
@@ -66,22 +68,23 @@ router.post('/profile/password', require_login, async (req, res) => {
     });
   }
 
-  // Update password
+  // update password
   const new_hash = await hashPassword(new_password);
   db_utils.update_password(user.id, new_hash);
 
-  // Invalidate all sessions
+  // invalidate all sessions
   db_utils.delete_sessions_for_user(user.username);
   req.session.destroy(() => {
     res.redirect('/login');
   });
 });
 
+// change display color
 router.post('/profile/customization', require_login, (req, res) => {
   const { name_color } = req.body;
   const user = db_utils.get_user_by_username(req.session.username);
 
-  // Is it a hex color
+  // valid hex color
   if (!/^#[0-9A-Fa-f]{6}$/.test(name_color)) {
     return res.render('profile', {
       user: get_user(req.session),

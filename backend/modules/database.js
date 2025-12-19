@@ -1,4 +1,7 @@
 // modules/database.js
+// creates and links the database
+// documentation is in readme
+
 const Database = require('better-sqlite3');
 const path = require('path');
 
@@ -8,7 +11,7 @@ const db = new Database(dbPath);
 // Enable foreign keys
 db.pragma('foreign_keys = ON');
 
-// Create users table
+// Users
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -21,6 +24,7 @@ db.exec(`
   )
 `);
 
+// Sessions
 db.exec(`
   CREATE TABLE IF NOT EXISTS sessions (
     id TEXT PRIMARY KEY,
@@ -30,6 +34,7 @@ db.exec(`
   `
 )
 
+// Comments
 db.exec(`
   CREATE TABLE IF NOT EXISTS comments (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,6 +45,7 @@ db.exec(`
   )
 `)
 
+// Login Attempts
 db.exec(`
   CREATE TABLE IF NOT EXISTS login_attempts (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,8 +54,9 @@ db.exec(`
   timestamp TEXT NOT NULL,
   success INTEGER
   )
-  `)
+`)
 
+// Chat Messages
 db.exec(`
   CREATE TABLE IF NOT EXISTS chat_messages (
   id INTEGER PRIMARY KEY AUTOINCREMENT,

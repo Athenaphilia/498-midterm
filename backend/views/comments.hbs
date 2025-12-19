@@ -1,3 +1,4 @@
+<!-- views/comments.hbs Handles comments page rendering -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -30,6 +31,7 @@
 
                 <span class="date">{{timestamp}}</span>
               </div>
+              <!-- {{{}}} To render raw html -->
               <p class="comment-text">{{{body}}}</p>
             </li>
           {{/each}}

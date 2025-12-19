@@ -1,8 +1,11 @@
 // modules/db_utils.js
+// all database functions used by the application
+
 const db = require('./database');
 
 // users
 
+// creates a user with parameters
 function create_user(username, password_hash, display_name, profile_customization = null) {
   const stmt = db.prepare(`
     INSERT INTO users (username, password_hash, display_name, profile_customization)
@@ -11,6 +14,7 @@ function create_user(username, password_hash, display_name, profile_customizatio
   return stmt.run(username, password_hash, display_name, profile_customization);
 }
 
+// gets user with parameter id
 function get_user_by_id(user_id) {
   const stmt = db.prepare(`
     SELECT id, username, display_name, profile_customization
@@ -20,6 +24,7 @@ function get_user_by_id(user_id) {
   return stmt.get(user_id);
 }
 
+// gets the user with the matching username
 function get_user_by_username(username) {
   const stmt = db.prepare(`
     SELECT *
@@ -29,6 +34,7 @@ function get_user_by_username(username) {
   return stmt.get(username);
 }
 
+// updates the profile customization, must be JSON
 function update_profile_customization(user_id, profile_customization) {
   const stmt = db.prepare(`
     UPDATE users
@@ -40,6 +46,7 @@ function update_profile_customization(user_id, profile_customization) {
 
 // sessions
 
+// creates a session with parameters
 function create_session(id, username, expires) {
   const stmt = db.prepare(`
     INSERT INTO sessions (id, username, expires)
@@ -48,6 +55,7 @@ function create_session(id, username, expires) {
   return stmt.run(id, username, expires);
 }
 
+// gets a session with parameter id
 function get_session(id) {
   const stmt = db.prepare(`
     SELECT *
@@ -57,6 +65,7 @@ function get_session(id) {
   return stmt.get(id);
 }
 
+// deletes a session with parameter id
 function delete_session(id) {
   const stmt = db.prepare(`
     DELETE FROM sessions
@@ -65,6 +74,7 @@ function delete_session(id) {
   return stmt.run(id);
 }
 
+// deletes all sessions with date < date provided
 function delete_expired_sessions(now_iso) {
   const stmt = db.prepare(`
     DELETE FROM sessions
@@ -75,6 +85,7 @@ function delete_expired_sessions(now_iso) {
 
 // Comments
 
+// add a comment with parameters
 function create_comment(author_id, body, timestamp) {
   const stmt = db.prepare(`
     INSERT INTO comments (author, body, timestamp)
@@ -83,6 +94,7 @@ function create_comment(author_id, body, timestamp) {
   return stmt.run(author_id, body, timestamp);
 }
 
+// get comments with limit and offset, with display name and customization
 function get_comments(limit = 20, offset = 0) {
   const stmt = db.prepare(`
     SELECT
@@ -99,6 +111,7 @@ function get_comments(limit = 20, offset = 0) {
   return stmt.all(limit, offset);
 }
 
+// deletes comment with id
 function delete_comment(comment_id) {
   const stmt = db.prepare(`
     DELETE FROM comments
@@ -107,6 +120,7 @@ function delete_comment(comment_id) {
   return stmt.run(comment_id);
 }
 
+// gets the total amount of comments
 function get_comment_count() {
   const stmt = db.prepare(`
     SELECT COUNT(*) as count FROM comments;
@@ -116,6 +130,7 @@ function get_comment_count() {
 
 // login attempts
 
+// add login attempt with parameters
 function record_login_attempt(username, ip, timestamp, success) {
   const stmt = db.prepare(`
     INSERT INTO login_attempts (ip, username, timestamp, success)
@@ -124,6 +139,7 @@ function record_login_attempt(username, ip, timestamp, success) {
   return stmt.run(username, ip, timestamp, success ? 1 : 0);
 }
 
+// get all login attempts since a certain date
 function get_recent_login_attempts(ip, since_timestamp) {
   const stmt = db.prepare(`
     SELECT *
@@ -135,6 +151,7 @@ function get_recent_login_attempts(ip, since_timestamp) {
   return stmt.all(ip, since_timestamp);
 }
 
+// update the user at id with +1 failed attempt
 function increment_failed_attempts(user_id) {
   db.prepare(`
     UPDATE users
@@ -143,6 +160,7 @@ function increment_failed_attempts(user_id) {
   `).run(user_id);
 }
 
+// update user at id with 0 failed attempts
 function reset_failed_attempts(user_id) {
   db.prepare(`
     UPDATE users
@@ -152,6 +170,7 @@ function reset_failed_attempts(user_id) {
   `).run(user_id);
 }
 
+// locks an account until provided date
 function lock_account(user_id, locked_until) {
   db.prepare(`
     UPDATE users
@@ -160,6 +179,7 @@ function lock_account(user_id, locked_until) {
   `).run(locked_until, user_id);
 }
 
+// delete all sessions for user, used to log people out
 function delete_sessions_for_user(username) {
   const stmt = db.prepare(`
     DELETE FROM sessions WHERE username = ?
@@ -167,6 +187,7 @@ function delete_sessions_for_user(username) {
   stmt.run(username);
 }
 
+// update the display name of a user
 function update_display_name(user_id, display_name) {
   const stmt = db.prepare(`
     UPDATE users SET display_name = ? WHERE id = ?
@@ -174,6 +195,7 @@ function update_display_name(user_id, display_name) {
   stmt.run(display_name, user_id);
 }
 
+// update the password of a user
 function update_password(user_id, password_hash) {
   const stmt = db.prepare(`
     UPDATE users SET password_hash = ? WHERE id = ?
@@ -181,6 +203,7 @@ function update_password(user_id, password_hash) {
   stmt.run(password_hash, user_id);
 }
 
+// gets the profile customization for a user id
 function get_profile_customization(user_id) {
   const stmt = db.prepare(`
     SELECT profile_customization FROM users WHERE id = ?
@@ -198,6 +221,7 @@ function get_profile_customization(user_id) {
   }
 }
 
+// creates a new chat message, NOT a comment
 function create_chat_message(author_id, body, timestamp) {
   const stmt = db.prepare(`
     INSERT INTO chat_messages (author_id, body, timestamp)
@@ -206,6 +230,7 @@ function create_chat_message(author_id, body, timestamp) {
   stmt.run(author_id, body, timestamp);
 }
 
+// gets the chat history, call with a high limit like 100
 function get_chat_history(limit, offset) {
   const stmt = db.prepare(`
     SELECT

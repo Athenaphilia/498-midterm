@@ -1,6 +1,8 @@
 // modules/user_helpers.js
+// used by many routes to get a user object to pass to handlebars
 
 function get_user(session) {
+  // return guest user, since null would break html
   if (!session.isLoggedIn) {
     return {
       name: 'Guest',

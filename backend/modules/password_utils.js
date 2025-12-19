@@ -1,4 +1,6 @@
 // modules/password-utils.js
+// utilities for password hashing and comparing
+
 const argon2 = require('argon2');
 
 // Argon2 configuration options
@@ -22,22 +24,23 @@ function validatePassword(password) {
     return { valid: false, errors };
   }
   
+  // password length >- 8
   if (password.length < 8) {
     errors.push('Password must be at least 8 characters long');
   }
-  
+  // must contain capital letter
   if (!/[A-Z]/.test(password)) {
     errors.push('Password must contain at least one uppercase letter');
   }
-  
+  // must contain lowercase letter
   if (!/[a-z]/.test(password)) {
     errors.push('Password must contain at least one lowercase letter');
   }
-  
+  // must contain 1 number
   if (!/[0-9]/.test(password)) {
     errors.push('Password must contain at least one number');
   }
-  
+  // must contain 1 special character
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
     errors.push('Password must contain at least one special character');
   }
@@ -60,12 +63,15 @@ async function comparePassword(password, hash) {
   return await argon2.verify(hash, password);
 }
 
+// check if display name is valid
 function is_valid_display_name(display_name) {
   const errors = [];
+  // must be at least length 5
   if (display_name.length < 5) {
     errors.push('Password must be at least 5 characters long');
   }
 
+  // must contain no special characters
   if (/[!@#$%^&*(),.?":{}|<>]/.test(display_name)) {
     errors.push("Display names may not contain special characters.");
   }

@@ -1,4 +1,6 @@
 // routes/auth_routes.js
+// contains routes for login and register
+
 const express = require('express');
 const {
   validatePassword,
@@ -11,8 +13,10 @@ const { get_user } = require('../modules/user_helpers');
 
 const router = express.Router();
 
-const MAX_FAILED = 5;
-const LOCKOUT_MINUTES = 15;
+const MAX_FAILED = 5; // failed password attempts
+const LOCKOUT_MINUTES = 15; // how long to lock account
+
+// helpers
 
 function is_account_locked(user) {
   if (!user.locked_until) return false;
@@ -36,30 +40,33 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
   const { username, password, display_name } = req.body;
 
+  // all fields must exist
   if (!username || !password || !display_name) {
     return res.render('register', { error: 'Fields missing.' });
   }
-
+  // password must pass validation
   const password_check = validatePassword(password);
   if (!password_check.valid) {
     return res.render('register', {
       error_messages: password_check.errors
     });
   }
+  // display must pass validation
   const display_check = is_valid_display_name(display_name);
   if (!display_check.valid) {
     return res.render('register', {
       error_messages: display_check.errors
     });
   }
-
+  // username must not already exists
   if (db_utils.get_user_by_username(username)) {
     return res.render('register', { error: 'Username already taken' });
   }
 
   try {
+    // hash
     const password_hash = await hashPassword(password);
-    const profile = { name_color: '#ffffff' };
+    const profile = { name_color: '#ffffff' }; // default name color
 
     db_utils.create_user(
       username,
@@ -85,7 +92,7 @@ router.get('/login', (req, res) => {
 // login submit
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const ip = req.ip;
+  const ip = req.ip; // set trust proxy = true, so this works
 
   const user = db_utils.get_user_by_username(username);
 
@@ -107,6 +114,7 @@ router.post('/login', async (req, res) => {
   const password_ok = await comparePassword(password, user.password_hash);
 
   if (!password_ok) {
+    // record a failed login attempt
     db_utils.record_login_attempt(username, ip, Date.now(), false);
     db_utils.increment_failed_attempts(user.id);
 
@@ -122,6 +130,7 @@ router.post('/login', async (req, res) => {
   db_utils.record_login_attempt(username, ip, Date.now(), true);
   db_utils.reset_failed_attempts(user.id);
 
+  // create new session
   req.session.isLoggedIn = true;
   req.session.username = username;
   req.session.loginTime = new Date().toISOString();

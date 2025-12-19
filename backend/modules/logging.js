@@ -1,4 +1,6 @@
 // modules/logging.js
+// handles logging for the entire app.
+// currently not using the detailed logger
 
 function requestLogger(req, res, next) {
   // Store the start time

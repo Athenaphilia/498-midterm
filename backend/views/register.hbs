@@ -1,3 +1,4 @@
+<!-- views/register.hbs Handles register page rendering, similar to login -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,14 +19,12 @@
         Create an account to share your stories, pictures, and love for cats!
       </p>
 
-      {{!-- Single error (e.g. username taken) --}}
       {{#if error}}
         <div class="error-box">
           <p class="error-msg">{{error}}</p>
         </div>
       {{/if}}
 
-      {{!-- Multiple validation errors (password rules) --}}
       {{#if error_messages}}
         <div class="error-box">
           <ul class="error-list">

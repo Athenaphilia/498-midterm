@@ -1,7 +1,9 @@
 // modules/markdown.js
+// Handles the comment markdown parsing, as well as cleaning
 const { marked } = require('marked');
 const sanitizeHtml = require('sanitize-html');
 
+// config for marked
 marked.setOptions({
   gfm: true,
   breaks: true,
@@ -9,6 +11,7 @@ marked.setOptions({
   mangle: false
 });
 
+// before sending comment to client, pass through this function.
 function renderMarkdown(markdownText) {
   const rawHtml = marked.parse(markdownText || '');
 

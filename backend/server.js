@@ -1,5 +1,9 @@
 // server.js
-require('dotenv').config();
+// gets all middleware running
+// collects all routes
+// runs the normal and socket.io server
+
+require('dotenv').config(); // .env import
 const express = require('express');
 const session = require('express-session');
 const http = require('http');
@@ -15,6 +19,8 @@ const profile_routes = require('./routes/profile_routes');
 const chat_api_routes = require('./routes/chat_api_routes');
 
 const db_utils = require('./modules/database_utils');
+
+const PORT = process.env.PORT || 3000; // gotten from docker container, NOT .env file
 
 const app = express();
 const io_server = http.createServer(app);
@@ -35,6 +41,7 @@ app.set('trust proxy', true);
 // view engine
 app.set('view engine', 'hbs');
 
+// needed for comment pagination
 hbs.registerHelper('gt', function (a, b) {
   return a > b;
 });
@@ -51,7 +58,6 @@ app.use(session_middleware);
 
 app.use(requestLogger);
 
-const PORT = process.env.PORT || 3000;
 
 app.use('/', page_routes);
 app.use('/', auth_routes);
@@ -59,9 +65,9 @@ app.use('/', comment_routes);
 app.use('/', profile_routes);
 app.use('/', chat_api_routes);
 
-io.engine.use(session_middleware);
+io.engine.use(session_middleware); // connect socket.io and express
 
-
+// when user connects
 io.on('connection', socket => {
   const req = socket.request;
   
@@ -73,6 +79,7 @@ io.on('connection', socket => {
   const customization = JSON.parse(user.profile_customization || '{}');
   console.log(`User ${user.username} connected`);
 
+  // when user sends a chat message, add it to the database
   socket.on('chat_message', msg => {
     if (!msg || !msg.trim()) return;
 
@@ -89,11 +96,12 @@ io.on('connection', socket => {
   });
 });
 
-
+// start server
 const server = io_server.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 
+// allows docker to shutdown gracefully
 process.on('SIGTERM', () => {
   db.close()
   io.close(() => {
