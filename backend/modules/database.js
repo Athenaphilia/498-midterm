@@ -50,4 +50,14 @@ db.exec(`
   )
   `)
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS chat_messages (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  author_id INTEGER NOT NULL,
+  body TEXT NOT NULL,
+  timestamp TEXT NOT NULL,
+  FOREIGN KEY (author_id) REFERENCES users(id)
+);
+`)
+
 module.exports = db;

@@ -198,6 +198,30 @@ function get_profile_customization(user_id) {
   }
 }
 
+function create_chat_message(author_id, body, timestamp) {
+  const stmt = db.prepare(`
+    INSERT INTO chat_messages (author_id, body, timestamp)
+    VALUES (?, ?, ?)
+  `);
+  stmt.run(author_id, body, timestamp);
+}
+
+function get_chat_history(limit, offset) {
+  const stmt = db.prepare(`
+    SELECT
+      c.id,
+      c.body,
+      c.timestamp,
+      u.display_name,
+      u.profile_customization
+    FROM chat_messages c
+    JOIN users u ON u.id = c.author_id
+    ORDER BY c.id DESC
+    LIMIT ? OFFSET ?
+  `);
+
+  return stmt.all(limit, offset).reverse();
+}
 
 module.exports = {
   // users
@@ -227,5 +251,9 @@ module.exports = {
   record_login_attempt,
   get_recent_login_attempts,
   increment_failed_attempts,
-  reset_failed_attempts
+  reset_failed_attempts,
+
+  // chat messages
+  create_chat_message,
+  get_chat_history
 };

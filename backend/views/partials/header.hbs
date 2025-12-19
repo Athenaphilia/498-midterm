@@ -2,9 +2,10 @@
   <nav class="navbar">
     <div class="nav-left">
       <a href="/" class="nav-logo">Home</a>
-      <a href="/comments/0">Comments</a>
+      <a href="/comments">Comments</a>
       {{#if user.isLoggedIn}}
         <a href="/comment/new">Post</a>
+        <a href="/chat">Chat</a>
         <a href="/profile">Profile</a>
       {{else}}
         <a href="/register">Register</a>
