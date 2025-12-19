@@ -25,7 +25,7 @@ const session_middleware = session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    secure: process.env.COOKIE_SECURE,
+    secure: process.env.COOKIE_SECURE === "true",
     maxAge: 24 * 60 * 60 * 1000
   }
 })
