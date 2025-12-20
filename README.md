@@ -16,6 +16,10 @@ Change directory `cd 498-midterm`
 
 Change the port in `docker-compose.yml` to whatever you want
 
+Create the `.env` file: `touch .env`
+
+Fill it with a SESSION_SECRET=some_string and COOKIE_SECURE=boolean
+
 Run `docker compose up --build -d`
 
 To stop `docker compose down`
