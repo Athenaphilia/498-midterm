@@ -4,7 +4,7 @@
 
 ### Introduction
 
-This is a very insecure, very simple forum with a cat theme.
+This is a slightly secure, very simple forum with a cat theme.
 
 This was developed for a midterm in a college class. The primary purpose was function.
 
